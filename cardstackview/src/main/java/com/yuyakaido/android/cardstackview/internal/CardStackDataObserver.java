@@ -2,7 +2,6 @@ package com.yuyakaido.android.cardstackview.internal;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
 
 public class CardStackDataObserver extends RecyclerView.AdapterDataObserver {
@@ -44,9 +43,15 @@ public class CardStackDataObserver extends RecyclerView.AdapterDataObserver {
             // 要素が全て削除された場合
             manager.setTopPosition(0);
         } else if (positionStart < topPosition) {
-            // TopPositionよりも前の要素が削除された場合
-            int diff = topPosition - positionStart;
-            manager.setTopPosition(Math.min(topPosition - diff, manager.getItemCount() - 1));
+            if (topPosition >= positionStart) {
+                // TopPositionよりも前の要素が削除された場合
+                int newPosition = topPosition - (positionStart + itemCount);
+
+                if (newPosition <= 0) {
+                    newPosition = 0;
+                }
+                manager.setTopPosition(Math.min(newPosition, manager.getItemCount() - 1));
+            }
         }
     }
 
