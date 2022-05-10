@@ -43,15 +43,14 @@ public class CardStackDataObserver extends RecyclerView.AdapterDataObserver {
             // 要素が全て削除された場合
             manager.setTopPosition(0);
         } else if (positionStart < topPosition) {
-            if (topPosition >= positionStart) {
-                // TopPositionよりも前の要素が削除された場合
-                int newPosition = topPosition - (positionStart + itemCount);
+            // TopPositionよりも前の要素が削除された場合
+            int newPosition = topPosition - itemCount;
 
-                if (newPosition <= 0) {
-                    newPosition = 0;
-                }
-                manager.setTopPosition(Math.min(newPosition, manager.getItemCount() - 1));
+            if (newPosition <= 0) {
+                newPosition = 0;
             }
+
+            manager.setTopPosition(Math.min(newPosition, manager.getItemCount() - 1));
         }
     }
 
