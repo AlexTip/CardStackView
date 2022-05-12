@@ -6,17 +6,14 @@ import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
-
 import androidx.annotation.FloatRange;
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.yuyakaido.android.cardstackview.internal.CardStackSetting;
 import com.yuyakaido.android.cardstackview.internal.CardStackSmoothScroller;
 import com.yuyakaido.android.cardstackview.internal.CardStackState;
 import com.yuyakaido.android.cardstackview.internal.DisplayUtil;
-
 import java.util.List;
 
 public class CardStackLayoutManager
@@ -268,6 +265,8 @@ public class CardStackLayoutManager
             removeAndRecycleView(getTopView(), recycler);
 
             final Direction direction = state.getDirection();
+            final Direction directionVertical = state.getDirectionVertical();
+            final Direction directionHorizontal = state.getDirectionHorizontal();
 
             state.next(state.status.toAnimatedStatus());
             state.topPosition++;
@@ -312,6 +311,7 @@ public class CardStackLayoutManager
                 @Override
                 public void run() {
                     listener.onCardSwiped(direction);
+                    listener.onCardSwipedDetails(directionVertical, directionHorizontal);
                     View topView = getTopView();
                     if (topView != null) {
                         listener.onCardAppeared(getTopView(), state.topPosition);
@@ -353,6 +353,8 @@ public class CardStackLayoutManager
 
         if (state.status.isDragging()) {
             listener.onCardDragging(state.getDirection(), state.getRatio());
+            listener.onCardDraggingDetails(state.getDirectionVertical(), state.getDirectionHorizontal(),
+                                           state.getRatioVertical(), state.getRatioHorizontal());
         }
     }
 

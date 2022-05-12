@@ -1,7 +1,6 @@
 package com.yuyakaido.android.cardstackview.internal;
 
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.yuyakaido.android.cardstackview.Direction;
 
 public class CardStackState {
@@ -67,6 +66,22 @@ public class CardStackState {
         }
     }
 
+    public Direction getDirectionVertical() {
+        if (dy < 0.0f) {
+            return Direction.Top;
+        } else {
+            return Direction.Bottom;
+        }
+    }
+
+    public Direction getDirectionHorizontal() {
+        if (dx < 0.0f) {
+            return Direction.Left;
+        } else {
+            return Direction.Right;
+        }
+    }
+
     public float getRatio() {
         int absDx = Math.abs(dx);
         int absDy = Math.abs(dy);
@@ -76,6 +91,18 @@ public class CardStackState {
         } else {
             ratio = absDx / (width / 2.0f);
         }
+        return Math.min(ratio, 1.0f);
+    }
+
+    public float getRatioVertical() {
+        int absDy = Math.abs(dy);
+        float ratio = absDy / (height / 2.0f);
+        return Math.min(ratio, 1.0f);
+    }
+
+    public float getRatioHorizontal() {
+        int absDx = Math.abs(dx);
+        float ratio = absDx / (width / 2.0f);
         return Math.min(ratio, 1.0f);
     }
 

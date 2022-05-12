@@ -1,13 +1,12 @@
 package com.yuyakaido.android.cardstackview.internal;
 
 import android.view.View;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
-
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
+import com.yuyakaido.android.cardstackview.Direction;
 import com.yuyakaido.android.cardstackview.Duration;
 import com.yuyakaido.android.cardstackview.SwipeAnimationSetting;
 
@@ -32,29 +31,26 @@ public class CardStackSnapHelper extends SnapHelper {
                     float horizontal = Math.abs(x) / (float) targetView.getWidth();
                     float vertical = Math.abs(y) / (float) targetView.getHeight();
                     Duration duration = Duration.fromVelocity(velocityY < velocityX ? velocityX : velocityY);
-                    if (duration == Duration.Fast || setting.swipeThreshold < horizontal || setting.swipeThreshold < vertical) {
+                    if (duration == Duration.Fast || (setting.swipeThreshold < horizontal
+                            && setting.directions.containsAll(Direction.HORIZONTAL)) || (
+                            setting.swipeThreshold < vertical && setting.directions.containsAll(Direction.VERTICAL))) {
                         CardStackState state = manager.getCardStackState();
-                        if (setting.directions.contains(state.getDirection())) {
-                            state.targetPosition = state.topPosition + 1;
+                        state.targetPosition = state.topPosition + 1;
 
-                            SwipeAnimationSetting swipeAnimationSetting = new SwipeAnimationSetting.Builder()
-                                    .setDirection(setting.swipeAnimationSetting.getDirection())
-                                    .setDuration(duration.duration)
-                                    .setInterpolator(setting.swipeAnimationSetting.getInterpolator())
-                                    .build();
-                            manager.setSwipeAnimationSetting(swipeAnimationSetting);
+                        SwipeAnimationSetting swipeAnimationSetting = new SwipeAnimationSetting.Builder()
+                                .setDirection(setting.swipeAnimationSetting.getDirection())
+                                .setDuration(duration.duration)
+                                .setInterpolator(setting.swipeAnimationSetting.getInterpolator())
+                                .build();
+                        manager.setSwipeAnimationSetting(swipeAnimationSetting);
 
-                            this.velocityX = 0;
-                            this.velocityY = 0;
+                        this.velocityX = 0;
+                        this.velocityY = 0;
 
-                            CardStackSmoothScroller scroller = new CardStackSmoothScroller(CardStackSmoothScroller.ScrollType.ManualSwipe, manager);
-                            scroller.setTargetPosition(manager.getTopPosition());
-                            manager.startSmoothScroll(scroller);
-                        } else {
-                            CardStackSmoothScroller scroller = new CardStackSmoothScroller(CardStackSmoothScroller.ScrollType.ManualCancel, manager);
-                            scroller.setTargetPosition(manager.getTopPosition());
-                            manager.startSmoothScroll(scroller);
-                        }
+                        CardStackSmoothScroller scroller =
+                                new CardStackSmoothScroller(CardStackSmoothScroller.ScrollType.ManualSwipe, manager);
+                        scroller.setTargetPosition(manager.getTopPosition());
+                        manager.startSmoothScroll(scroller);
                     } else {
                         CardStackSmoothScroller scroller = new CardStackSmoothScroller(CardStackSmoothScroller.ScrollType.ManualCancel, manager);
                         scroller.setTargetPosition(manager.getTopPosition());
